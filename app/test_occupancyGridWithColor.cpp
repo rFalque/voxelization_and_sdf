@@ -47,7 +47,7 @@ int main() {
     Eigen::MatrixXd graph_V;
     Eigen::MatrixXi graph_E;
     occupancy_grid.generate_graph(graph_V, graph_E);
-    occupancy_grid.print_to_folder("../data/ocuppancy_grid/");
+    occupancy_grid.print_to_folder("../data/occupancy_grid/");
     occupancy_grid.print_to_yaml("../data/Lucy100k.yaml");
 
     occupancy_grid.generate_mesh(cubes_V, cubes_F, cubes_RGB);

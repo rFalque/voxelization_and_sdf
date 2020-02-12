@@ -33,3 +33,6 @@
 
 build
 .vscode
+data/sdf
+data/occupancy_grid
+data/*.yaml
