@@ -34,6 +34,11 @@ export OMP_NUM_THREADS=<number of threads to use>
 
 ## Running the demo
 
+To compute the SDF
+```bash
+./test_SDF
+```
+
 To run the voxelizer
 ```bash
 ./test_occupancyGrid
@@ -44,20 +49,15 @@ To run the colored voxelizer
 ./test_occupancyGridWithColor
 ```
 
-To compute the SDF
-```bash
-./test_SDF
-```
-
 ## examples
-Voxelized Lucy:
-
-![Voxelizer](./images/voxelizer.png "Lucy voxelized")
 
 SDF computation:
 
 ![Graph visualization](./images/SDF.gif "Lucy SDF")
 
+Voxelized Lucy:
+
+![Voxelizer](./images/voxelizer.png "Lucy voxelized")
 
 Color voxelizer:
 
