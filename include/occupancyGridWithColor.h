@@ -22,6 +22,7 @@
 #include "sgn.h"
 #include "IO/writePNG.h"
 #include "IO/process_folder.h"
+#include "colorPalette.h"
 
 // polyscope wrapper
 class OccupancyGridWithColor
@@ -247,14 +248,21 @@ class OccupancyGridWithColor
             return true;
         };
 
+
         // print the occupancy grid into a yaml file
         inline bool print_to_yaml(std::string filename) {
+
             std::ofstream out_file(filename);
+            ColorPalette color_palette;
+            Eigen::Vector3d voxel_color;
+
+
             out_file << "? ''\n";
             out_file << ": - size: !list_int\n";
-            out_file << "    - " + std::to_string(occupancy_grid_.dimension(0)) + "\n";
-            out_file << "    - " + std::to_string(occupancy_grid_.dimension(1)) + "\n";
-            out_file << "    - " + std::to_string(occupancy_grid_.dimension(2)) + "\n";
+            out_file << "    - " + std::to_string(32) + "\n";
+            out_file << "    - " + std::to_string(32) + "\n";
+            out_file << "    - " + std::to_string(32) + "\n";
+            out_file << "  - entities: !list_end []\n";
             out_file << "  - blocks: !list_compound\n";
             for (int x = 0; x < occupancy_grid_.dimension(0); ++x)
                 for (int y = 0; y < occupancy_grid_.dimension(1); ++y)
@@ -262,26 +270,25 @@ class OccupancyGridWithColor
                     {
                         if (occupancy_grid_(x, y, z) == 1) {
                             out_file << "    - - pos: !list_int\n";
-                            out_file << "        - " + std::to_string(x) + "\n";
-                            out_file << "        - " + std::to_string(y) + "\n";
+                            out_file << "        - " + std::to_string(x-round(occupancy_grid_.dimension(0)/2)) + "\n";
                             out_file << "        - " + std::to_string(z) + "\n";
-                            out_file << "      - state: 0\n";
+                            out_file << "        - " + std::to_string(-y+round(occupancy_grid_.dimension(1)/2)) + "\n";
+                            voxel_color << R_(x, y, z)*255, G_(x, y, z)*255, B_(x, y, z)*255;
+                            out_file << "      - state: " + std::to_string(color_palette.get_closest_color_id(voxel_color)) + "\n";
                         }
 
                     }
             out_file << "  - author: rFalque\n";
-            out_file << "  - palette: !list_compound\n";
-            out_file << "    - - Properties:\n";
-            out_file << "        - variant: smooth_andesite\n";
-            out_file << "      - Name: minecraft:stone\n";
-            out_file << "  - DataVersion: 1139\n";
-            out_file << "  - ForgeDataVersion:\n";
-            out_file << "    - minecraft: 1139\n";
+
+            color_palette.print_palette(out_file);
+
+            out_file << "  - DataVersion: 2227\n";
 
             out_file.close();
 
             return true;
         };
+
 
         inline bool generate_mesh(Eigen::MatrixXd & vertices, Eigen::MatrixXi & faces, Eigen::MatrixXd & colors) {
             std::vector< Eigen::Vector3d > vertices_vector;
